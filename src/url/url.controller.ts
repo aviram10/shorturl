@@ -21,8 +21,8 @@ export class UrlController {
   @Redirect('', 303)
   @Get(':id')
   async redirect(@Param('id') id: string) {
-    const url: unknown = await this.urlService.getOrginalUrl(id);
-    if (!url) throw new NotFoundException();
+    const url = await this.urlService.getOrginalUrl(id);
+    if (url === null) throw NotFoundException;
     return { url };
   }
 }
