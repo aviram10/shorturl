@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaClient, urls } from '@prisma/client';
 import * as uniqid from 'uniqid';
 @Injectable()
@@ -17,7 +17,7 @@ export class UrlService {
       await this.prisma.urls.create({ data });
       return this.domain + shortUrl;
     } catch (err) {
-      console.log(err);
+      throw new HttpException('url too long', HttpStatus.BAD_REQUEST);
     }
   }
   async getShortUrl(orginalUrl: string) {
