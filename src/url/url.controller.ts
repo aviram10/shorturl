@@ -2,8 +2,7 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
-  HttpStatus,
+  NotFoundException,
   Param,
   Post,
   Redirect,
@@ -23,7 +22,7 @@ export class UrlController {
   @Get(':id')
   async redirect(@Param('id') id: string) {
     const url: unknown = await this.urlService.getOrginalUrl(id);
-    if (!url) throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    if (!url) throw new NotFoundException();
     return { url };
   }
 }
