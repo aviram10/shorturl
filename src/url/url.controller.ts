@@ -17,7 +17,11 @@ export class UrlController {
   @Post('shrink')
   //the parameters orginalUrl can injected with any type even when declare type
   async shrink(@Body('orginalUrl') orginalUrl: any) {
-    if (!orginalUrl || typeof orginalUrl !== 'string')
+    if (
+      !orginalUrl ||
+      typeof orginalUrl !== 'string' ||
+      !orginalUrl.startsWith('http://')
+    )
       throw new BadRequestException();
     const shortUrl = await this.urlService.getShortUrl(orginalUrl);
     if (shortUrl) return shortUrl;
