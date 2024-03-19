@@ -1,4 +1,6 @@
 import {
+  BadRequestException,
+  // BadRequestException,
   Body,
   Controller,
   Get,
@@ -13,7 +15,10 @@ import { UrlService } from './url.service';
 export class UrlController {
   constructor(private urlService: UrlService) {}
   @Post('shrink')
-  async shrink(@Body('orginalUrl') orginalUrl: string) {
+  //the parameters orginalUrl can injected with any type even when declare type
+  async shrink(@Body('orginalUrl') orginalUrl: any) {
+    if (!orginalUrl || typeof orginalUrl !== 'string')
+      throw new BadRequestException();
     const shortUrl = await this.urlService.getShortUrl(orginalUrl);
     if (shortUrl) return shortUrl;
     return this.urlService.shrink(orginalUrl);
@@ -23,6 +28,7 @@ export class UrlController {
   async redirect(@Param('id') id: string) {
     const url = await this.urlService.getOrginalUrl(id);
     if (url === null) throw NotFoundException;
+    this.urlService.count(id);
     return { url };
   }
 }

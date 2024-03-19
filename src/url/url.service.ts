@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaClient, urls } from '@prisma/client';
 import * as uniqid from 'uniqid';
+
 @Injectable()
 export class UrlService {
   private prisma = new PrismaClient();
@@ -27,6 +28,7 @@ export class UrlService {
       }
     }
   }
+
   async getShortUrl(orginalUrl: string) {
     const url = await this.prisma.urls.findUnique({
       where: { orginalUrl },
@@ -34,6 +36,7 @@ export class UrlService {
     if (url === null) return null;
     return this.domain + url.shortUrl;
   }
+
   async getOrginalUrl(shortUrl: string) {
     const url = await this.prisma.urls.findUnique({
       where: {
@@ -42,5 +45,13 @@ export class UrlService {
     });
     if (url === null) return null;
     return url.orginalUrl;
+  }
+
+  async count(id: string) {
+    await this.prisma.$queryRaw`INSERT INTO visitors (id, counter)
+    VALUES (${id}, 1)
+    ON CONFLICT (id) DO UPDATE
+     SET counter = visitors.counter + 1`;
+    return;
   }
 }
