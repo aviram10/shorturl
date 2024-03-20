@@ -16,7 +16,7 @@ export class UrlController {
   constructor(private urlService: UrlService) {}
   @Post('shrink')
   //the parameters orginalUrl can injected with any type even when declare type
-  async shrink(@Body('orginalUrl') orginalUrl: any) {
+  async shrink(@Body('orginalUrl') orginalUrl: string) {
     if (
       !orginalUrl ||
       typeof orginalUrl !== 'string' ||
