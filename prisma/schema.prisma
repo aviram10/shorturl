@@ -12,14 +12,8 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
 model urls {
-  orginalUrl String @unique @db.VarChar(255)
+  originalUrl String @unique @db.VarChar(255)
   shortUrl   String @id
   counter    Int?   @default(0)
-}
-
-model visitors{
-  id String @id
-  counter Int @default(0)
 }

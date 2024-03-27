@@ -1,6 +1,4 @@
 import {
-  BadRequestException,
-  // BadRequestException,
   Body,
   Controller,
   Get,
@@ -10,27 +8,22 @@ import {
   Redirect,
 } from '@nestjs/common';
 import { UrlService } from './url.service';
+import { BaseURL } from './url.dto';
 
 @Controller()
 export class UrlController {
   constructor(private urlService: UrlService) {}
   @Post('shrink')
-  //the parameters orginalUrl can injected with any type even when declare type
-  async shrink(@Body('orginalUrl') orginalUrl: string) {
-    if (
-      !orginalUrl ||
-      typeof orginalUrl !== 'string' ||
-      !orginalUrl.startsWith('http://')
-    )
-      throw new BadRequestException();
-    const shortUrl = await this.urlService.getShortUrl(orginalUrl);
+  async shrink(@Body() { originalUrl }: BaseURL) {
+    const shortUrl = await this.urlService.getShortUrl(originalUrl);
     if (shortUrl) return shortUrl;
-    return this.urlService.shrink(orginalUrl);
+    return this.urlService.shrink(originalUrl);
   }
+
   @Redirect('', 303)
   @Get(':id')
   async redirect(@Param('id') id: string) {
-    const url = await this.urlService.getOrginalUrl(id);
+    const url = await this.urlService.getOriginalUrl(id);
     if (url === null) throw NotFoundException;
     this.urlService.count(id);
     return { url };
